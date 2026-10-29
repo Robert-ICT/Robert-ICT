@@ -38,7 +38,7 @@ My goal is to start a career in a Security Operations Centre (SOC), where I can 
 
 ## 🔬 Featured Projects
 
-### 1. Tempest Incident Investigation
+### 1. Tempest Incident Investigation (In Progress)
 **Platform:** TryHackMe
 
 Investigating a simulated cybersecurity incident and documenting the evidence, investigative process and findings.
@@ -51,7 +51,7 @@ Skills demonstrated:
 
 [View the investigation](https://github.com/Robert-ICT/Robert-ICT/blob/main/TryHackMe/Tempest/README.md)
 
-### 2. Splunk SOC Detection Lab
+### 2. Splunk SOC Detection Lab (In Progress)
 **Platform:** Splunk
 
 Developing and documenting SPL searches to identify suspicious authentication patterns and investigate potential endpoint activity using lab data.
