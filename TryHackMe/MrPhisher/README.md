@@ -1,4 +1,6 @@
-# Mr. Phisher
+# Mr. Phisher Room
+
+<img src="images/mrphisher.png" width="40%" alt="logo">
 
 This is a writeup for the Mr. Phisher room on TryHackMe.
 
@@ -8,15 +10,15 @@ You can find this room here: https://tryhackme.com/room/mrphisher
 
 A suspicious email was received with MrPhisher.docm attached.
 
-![MrPhisher.docm](images/1.png)
+<img src="images/1.png" width="50%" alt="MrPhisher.docm">
 
 Opening the file reveals an Image.
 
-![MrPhisher.docm file contents](images/2.png)
+<img src="images/2.png" width="70%" alt="MrPhisher.docm file contents">
 
 Investigating the Macros Tab reveals a VBA script.
 
-![Macro Tab](images/3.png)
+<img src="images/3.png" width="80%" alt="Macro Tab">
 
 This VBA macro is taking a list of numbers, performs an XOR operation on each number for its index, and then appends it to B
 
