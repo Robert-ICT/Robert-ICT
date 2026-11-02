@@ -2,19 +2,11 @@
 
 ### Aspiring SOC Analyst | Networks & Cybersecurity
 
-I'm an Information Technology Bachelor student majoring in Networks and Cybersecurity, expecting to graduate in **March 2027**. I'm developing practical skills in security monitoring, SIEM analysis, incident investigation and defensive security.
+I'm an Information Technology Bachelor student majoring in Networks and Cybersecurity, expecting to graduate in March 2027. I'm developing practical skills in security monitoring, SIEM analysis, incident investigation and defensive security.
 
 My goal is to start a career in a Security Operations Centre (SOC), where I can contribute to investigating alerts, analysing security events and helping organisations improve their security posture.
 
-## 🎯 About Me
-
-- Bachelor of Information Technology — Networks & Cybersecurity
-- Interested in SOC operations, incident response and threat detection
-- Building practical experience through cybersecurity labs and technical projects
-- Developing my skills in Splunk and security log analysis
-- Seeking entry-level SOC, cybersecurity and security operations opportunities
-
-## 🧰 Technical Skills
+## Technical Skills
 
 **SIEM & Security Monitoring**
 - Splunk and Search Processing Language (SPL)
@@ -36,42 +28,32 @@ My goal is to start a career in a Security Operations Centre (SOC), where I can 
 - Python
 - PowerShell
 
-## 🔬 Featured Projects
+## Projects
 
-### 1. Tempest Incident Investigation (In Progress)
+### 1. Investigations / Write-ups
 **Platform:** TryHackMe
 
-Investigating a simulated cybersecurity incident and documenting the evidence, investigative process and findings.
+I investigate and create write up reports on various labs on TryHackMe.
 
-Skills demonstrated:
-- Log and artefact analysis
-- Incident timeline development
-- Evidence-based conclusions
-- Technical reporting
+You can find my work related to this 
+[here](https://github.com/Robert-ICT/Robert-ICT/blob/main/TryHackMe/)
 
-[View the investigation](https://github.com/Robert-ICT/Robert-ICT/blob/main/TryHackMe/Tempest/README.md)
-
-### 2. Splunk SOC Detection Lab (In Progress)
+### 2. Splunk Home Lab
 **Platform:** Splunk
 
-Developing and documenting SPL searches to identify suspicious authentication patterns and investigate potential endpoint activity using lab data.
+This is a home lab that I work on which includes various features that are standard in real SOC environments such as alert classification, security analysis, and even a system that uses AI/ML to determine severity of logs.
 
-Skills demonstrated:
-- SPL query development
-- Security event analysis
-- Detection logic and false-positive considerations
-- Alert investigation
+You can find out more about this project
+[here](https://github.com/Robert-ICT/Robert-ICT/blob/main/SIEM/README.md)
 
-[View the project](https://github.com/Robert-ICT/Robert-ICT/blob/main/SIEM/README.md)
-
-## 📚 Current Learning Goals
+## Current Learning Goals
 
 - Improve Splunk search and detection skills
 - Develop stronger Windows event log analysis skills
 - Practise investigating security alerts from initial detection to conclusion
 - Build repeatable incident triage and reporting procedures
 
-## 🤝 Connect With Me
+## Contact Info
 
 - LinkedIn: [linkedin.com/in/robert-allen](https://www.linkedin.com/in/robert-allen-1700722a3/)
 - Email: [ralle53295@gmail.com](mailto:ralle53295@gmail.com)
