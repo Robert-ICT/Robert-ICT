@@ -44,13 +44,13 @@ You can find my work related to this
 This is a home lab that I work on which includes various features that are standard in real SOC environments such as alert classification, security analysis, and even a system that uses AI/ML to determine severity of logs.
 
 You can find out more about this project
-[here](https://github.com/Robert-ICT/Robert-ICT/blob/main/SIEM/README.md)
+[here](https://github.com/Robert-ICT/Robert-ICT/blob/main/SIEM/)
 
 ## Current Learning Goals
 
 - Improve Splunk search and detection skills
 - Develop stronger Windows event log analysis skills
-- Practise investigating security alerts from initial detection to conclusion
+- Practice investigating security alerts from initial detection to conclusion
 - Build repeatable incident triage and reporting procedures
 
 ## Contact Info
