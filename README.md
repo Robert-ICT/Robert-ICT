@@ -29,7 +29,7 @@ You can find my work related to this
 [here](https://github.com/Robert-ICT/Robert-ICT/blob/main/TryHackMe/)
 
 ### 2. Splunk Home Lab
-**Platform:** Splunk
+**Platform:** Splunk and VMWare
 
 This is a home lab that I work on which includes various features that are standard in real SOC environments such as alert classification, security analysis, and even a system that uses AI/ML to determine severity of logs.
 
