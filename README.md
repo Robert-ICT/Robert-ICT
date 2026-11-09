@@ -8,25 +8,15 @@ My goal is to start a career in a Security Operations Centre (SOC), where I can 
 
 ## Technical Skills
 
-**SIEM & Security Monitoring**
-- Splunk and Search Processing Language (SPL)
-- Security event analysis and alert triage
+**SIEM & Security Monitoring:** Splunk and Search Processing Language (SPL), Security event analysis and alert triage
 
-**Networking**
-- TCP/IP, DNS, HTTP/HTTPS
-- Network traffic and common protocols
+**Networking:** OSI Model, TCP, UDP, DNS, HTTP/HTTPS
 
-**Operating Systems**
-- Windows security events and logs
-- Linux fundamentals
+**Operating Systems:** Windows security events and logs, Linux fundamentals
 
-**Investigation & Response**
-- Incident timelines and evidence documentation
-- Indicator analysis and incident reporting
+**Investigation & Response:** Incident timelines and evidence documentation, Indicator analysis and incident reporting
 
-**Scripting**
-- Python
-- PowerShell
+**Scripting:** Python, Powershell
 
 ## Projects
 
@@ -43,7 +33,7 @@ You can find my work related to this
 
 This is a home lab that I work on which includes various features that are standard in real SOC environments such as alert classification, security analysis, and even a system that uses AI/ML to determine severity of logs.
 
-You can find out more about this project
+You can find out more 
 [here](https://github.com/Robert-ICT/Robert-ICT/blob/main/SIEM/)
 
 ## Current Learning Goals
