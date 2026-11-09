@@ -24,7 +24,6 @@ My goal is to start a career in a Security Operations Centre (SOC), where I can 
 **Platform:** TryHackMe
 
 I investigate and create write up reports on various labs on TryHackMe.
-
 You can find my work related to this 
 [here](https://github.com/Robert-ICT/Robert-ICT/blob/main/TryHackMe/)
 
@@ -32,16 +31,12 @@ You can find my work related to this
 **Platform:** Splunk and VMWare
 
 This is a home lab that I work on which includes various features that are standard in real SOC environments such as alert classification, security analysis, and even a system that uses AI/ML to determine severity of logs.
-
 You can find out more 
 [here](https://github.com/Robert-ICT/Robert-ICT/blob/main/SIEM/)
 
 ## Current Learning Goals
 
-- Improve Splunk search and detection skills
-- Develop stronger Windows event log analysis skills
-- Practice investigating security alerts from initial detection to conclusion
-- Build repeatable incident triage and reporting procedures
+Improve Splunk search and detection skills, Develop stronger Windows event log analysis skills, Practice investigating security alerts from initial detection to conclusion, Build repeatable incident triage and reporting procedures
 
 ## Contact Info
 
