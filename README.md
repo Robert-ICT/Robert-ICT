@@ -32,7 +32,7 @@ You can find my work related to this
 
 This is a home lab that I work on which includes various features that are standard in real SOC environments such as alert classification, security analysis, and even a system that uses AI/ML to determine severity of logs.
 You can find out more 
-[here](https://github.com/Robert-ICT/Robert-ICT/blob/main/SIEM/)
+[here](https://github.com/Robert-ICT/Robert-ICT/tree/main/SOC-Home-Lab)
 
 ## Current Learning Goals
 
