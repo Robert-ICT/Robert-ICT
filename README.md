@@ -43,6 +43,3 @@ Improve Splunk search and detection skills, Develop stronger Windows event log a
 - LinkedIn: [linkedin.com/in/robert-allen](https://www.linkedin.com/in/robert-allen-1700722a3/)
 - Email: [ralle53295@gmail.com](mailto:ralle53295@gmail.com)
 
----
-
-*Thanks for reading!*
