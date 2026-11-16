@@ -2,9 +2,7 @@
 
 ### Aspiring SOC Analyst | Networks & Cybersecurity
 
-I'm an Information Technology Bachelor student majoring in Networks and Cybersecurity, expecting to graduate in March 2027. I'm developing practical skills in security monitoring, SIEM analysis, incident investigation and defensive security.
-
-My goal is to start a career in a Security Operations Centre (SOC), where I can contribute to investigating alerts, analysing security events and helping organisations improve their security posture.
+I'm an Information Technology Bachelor student majoring in Networks and Cybersecurity, expecting to graduate in March 2027. I'm developing practical skills in security monitoring, SIEM analysis, incident investigation and defensive security. My goal is to start a career in a Security Operations Centre (SOC), where I can contribute to investigating alerts, analysing security events and helping organisations improve their security posture.
 
 ## Technical Skills
 
